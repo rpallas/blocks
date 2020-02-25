@@ -7,55 +7,55 @@ Resources:
     Properties:
       Name: !Sub
         - ${ResourceName} From Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName}
-        - ResourceName: /users
+        - ResourceName: /resources
       StageName: !Ref StackeryEnvironmentAPIGatewayStageName
       DefinitionBody:
         swagger: '2.0'
         info: {}
         paths:
-          /users:
+          /resources:
             get:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${listUsers.Arn}/invocations
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${listResources.Arn}/invocations
               responses: {}
             post:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${createUser.Arn}/invocations
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${createResource.Arn}/invocations
               responses: {}
-          /users/{id}:
+          /resources/{id}:
             get:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getUser.Arn}/invocations
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getResource.Arn}/invocations
               responses: {}
             put:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${updateUser.Arn}/invocations
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${updateResource.Arn}/invocations
               responses: {}
             delete:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${deleteUser.Arn}/invocations
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${deleteResource.Arn}/invocations
               responses: {}
       EndpointConfiguration: REGIONAL
     Metadata:
-      StackeryName: /users
-  getUser:
+      StackeryName: /resources
+  getResource:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-getUser
+      FunctionName: !Sub ${AWS::StackName}-getResource
       Description: !Sub
         - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Function ${ResourceName}
-        - ResourceName: getUser
-      CodeUri: src/getUser
+        - ResourceName: getResource
+      CodeUri: src/getResource
       Handler: index.handler
       Runtime: nodejs12.x
       MemorySize: 3008
@@ -64,28 +64,28 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
         - DynamoDBCrudPolicy:
-            TableName: !Ref usersTable
+            TableName: !Ref resourcesTable
       Environment:
         Variables:
-          TABLE_NAME: !Ref usersTable
-          TABLE_ARN: !GetAtt usersTable.Arn
+          TABLE_NAME: !Ref resourcesTable
+          TABLE_ARN: !GetAtt resourcesTable.Arn
       Events:
-        apiGETusersid:
+        apiGETresourcesid:
           Type: Api
           Properties:
-            Path: /users/{id}
+            Path: /resources/{id}
             Method: GET
             RestApiId: !Ref api
     Metadata:
-      StackeryName: getUser
-  updateUser:
+      StackeryName: getResource
+  updateResource:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-updateUser
+      FunctionName: !Sub ${AWS::StackName}-updateResource
       Description: !Sub
         - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Function ${ResourceName}
-        - ResourceName: updateUser
-      CodeUri: src/updateUser
+        - ResourceName: updateResource
+      CodeUri: src/updateResource
       Handler: index.handler
       Runtime: nodejs12.x
       MemorySize: 3008
@@ -94,28 +94,28 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
         - DynamoDBCrudPolicy:
-            TableName: !Ref usersTable
+            TableName: !Ref resourcesTable
       Environment:
         Variables:
-          TABLE_NAME: !Ref usersTable
-          TABLE_ARN: !GetAtt usersTable.Arn
+          TABLE_NAME: !Ref resourcesTable
+          TABLE_ARN: !GetAtt resourcesTable.Arn
       Events:
-        apiPUTusersid:
+        apiPUTresourcesid:
           Type: Api
           Properties:
-            Path: /users/{id}
+            Path: /resources/{id}
             Method: PUT
             RestApiId: !Ref api
     Metadata:
-      StackeryName: updateUser
-  createUser:
+      StackeryName: updateResource
+  createResource:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-createUser
+      FunctionName: !Sub ${AWS::StackName}-createResource
       Description: !Sub
         - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Function ${ResourceName}
-        - ResourceName: createUser
-      CodeUri: src/createUser
+        - ResourceName: createResource
+      CodeUri: src/createResource
       Handler: index.handler
       Runtime: nodejs12.x
       MemorySize: 3008
@@ -124,28 +124,28 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
         - DynamoDBCrudPolicy:
-            TableName: !Ref usersTable
+            TableName: !Ref resourcesTable
       Environment:
         Variables:
-          TABLE_NAME: !Ref usersTable
-          TABLE_ARN: !GetAtt usersTable.Arn
+          TABLE_NAME: !Ref resourcesTable
+          TABLE_ARN: !GetAtt resourcesTable.Arn
       Events:
-        apiPOSTusers:
+        apiPOSTresources:
           Type: Api
           Properties:
-            Path: /users
+            Path: /resources
             Method: POST
             RestApiId: !Ref api
     Metadata:
-      StackeryName: createUser
-  deleteUser:
+      StackeryName: createResource
+  deleteResource:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-deleteUser
+      FunctionName: !Sub ${AWS::StackName}-deleteResource
       Description: !Sub
         - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Function ${ResourceName}
-        - ResourceName: deleteUser
-      CodeUri: src/deleteUser
+        - ResourceName: deleteResource
+      CodeUri: src/deleteResource
       Handler: index.handler
       Runtime: nodejs12.x
       MemorySize: 3008
@@ -154,28 +154,28 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
         - DynamoDBCrudPolicy:
-            TableName: !Ref usersTable
+            TableName: !Ref resourcesTable
       Environment:
         Variables:
-          TABLE_NAME: !Ref usersTable
-          TABLE_ARN: !GetAtt usersTable.Arn
+          TABLE_NAME: !Ref resourcesTable
+          TABLE_ARN: !GetAtt resourcesTable.Arn
       Events:
-        apiDELETEusersid:
+        apiDELETEresourcesid:
           Type: Api
           Properties:
-            Path: /users/{id}
+            Path: /resources/{id}
             Method: DELETE
             RestApiId: !Ref api
     Metadata:
-      StackeryName: deleteUser
-  listUsers:
+      StackeryName: deleteResource
+  listResources:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-listUsers
+      FunctionName: !Sub ${AWS::StackName}-listResources
       Description: !Sub
         - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Function ${ResourceName}
-        - ResourceName: listUsers
-      CodeUri: src/listUsers
+        - ResourceName: listResources
+      CodeUri: src/listResources
       Handler: index.handler
       Runtime: nodejs12.x
       MemorySize: 3008
@@ -184,21 +184,21 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
         - DynamoDBCrudPolicy:
-            TableName: !Ref usersTable
+            TableName: !Ref resourcesTable
       Environment:
         Variables:
-          TABLE_NAME: !Ref usersTable
-          TABLE_ARN: !GetAtt usersTable.Arn
+          TABLE_NAME: !Ref resourcesTable
+          TABLE_ARN: !GetAtt resourcesTable.Arn
       Events:
-        apiGETusers:
+        apiGETresources:
           Type: Api
           Properties:
-            Path: /users
+            Path: /resources
             Method: GET
             RestApiId: !Ref api
     Metadata:
-      StackeryName: listUsers
-  usersTable:
+      StackeryName: listResources
+  resourcesTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
@@ -212,9 +212,9 @@ Resources:
         WriteCapacityUnits: 5
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
-      TableName: !Sub ${AWS::StackName}-usersTable
+      TableName: !Sub ${AWS::StackName}-resourcesTable
     Metadata:
-      StackeryName: Users
+      StackeryName: Resources
 Parameters:
   StackeryStackTagName:
     Type: String
